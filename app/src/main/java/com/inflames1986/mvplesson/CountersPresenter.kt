@@ -7,6 +7,7 @@ class CountersPresenter(
 
     fun onCounterClick(button: Int) {
         when (button) {
+
             BUTTON1 -> {
                 val newValue = model.next(0)
                 view.setText(newValue.toString(), 0)
@@ -19,6 +20,7 @@ class CountersPresenter(
                 val newValue = model.next(2)
                 view.setText(newValue.toString(), 2)
             }
+
         }
     }
 }

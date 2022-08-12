@@ -7,15 +7,19 @@ import com.inflames1986.mvplesson.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), MainView {
 
+
     private var _binding: ActivityMainBinding? = null
     val binding: ActivityMainBinding
         get() = _binding!!
+
 
     private lateinit var presenter: CountersPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         _binding = ActivityMainBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
 
         initPresenter()

@@ -14,10 +14,10 @@ class UserInfoPresenter(
     override fun onFirstViewAttach() {
         val currentUser = githubUsersRepo.getUsers().firstOrNull { it.id == userId }
         currentUser?.let { viewState.showLogin(it.login) }
-        currentUser?.let { viewState.showTopString("Заглушка верхей строки")
+        currentUser?.let { viewState.showTopString("Здесь будет название")
             (it.login) }
         currentUser?.let { viewState.showCenterString(it.htmlUrl) }
-        currentUser?.let { viewState.showBottomString("Заглушка нижней строки") }
+        currentUser?.let { viewState.showBottomString("Описательная часть") }
     }
 
     fun backPressed(): Boolean {

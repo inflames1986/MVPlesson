@@ -2,6 +2,7 @@ package com.inflames1986.mvplesson.users
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.inflames1986.mvplesson.databinding.FragmentUsersBinding
@@ -11,6 +12,7 @@ import com.inflames1986.mvplesson.App
 import com.inflames1986.mvplesson.interfaces.BackButtonListener
 import com.inflames1986.mvplesson.interfaces.UsersView
 import com.inflames1986.mvplesson.model.GithubUsersRepo
+import ru.vdv.myapp.mygitapiapp.users.UsersPresenter
 
 
 class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
@@ -44,6 +46,13 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
         adapter?.notifyDataSetChanged()
     }
 
+    override fun showProgressBar() {
+        this.vb?.progressBar?.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressBar() {
+        vb?.progressBar?.visibility = View.GONE
+    }
 
     override fun backPressed(): Boolean = presenter.backPressed()
 

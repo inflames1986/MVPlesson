@@ -1,13 +1,18 @@
-package com.inflames1986.mvplesson.users
+package ru.vdv.myapp.mygitapiapp.users
 
 import com.github.terrakok.cicerone.Router
-import moxy.MvpPresenter
 import com.inflames1986.mvplesson.AndroidScreens
 import com.inflames1986.mvplesson.interfaces.IUserListPresenter
 import com.inflames1986.mvplesson.interfaces.UserItemView
 import com.inflames1986.mvplesson.interfaces.UsersView
 import com.inflames1986.mvplesson.model.GithubUser
 import com.inflames1986.mvplesson.model.GithubUsersRepo
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
+import moxy.MvpPresenter
+
 
 class UsersPresenter(
     val usersRepo: GithubUsersRepo,
@@ -27,24 +32,42 @@ class UsersPresenter(
     }
 
     val usersListPresenter = UsersListPresenter()
+    val disposables = CompositeDisposable()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        loadData()
-    }
+        viewState.showProgressBar()
+        usersRepo.getUsers()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : SingleObserver<List<GithubUser>> {
+                override fun onSubscribe(d: Disposable?) {
+                    disposables.add(d)
+                }
 
-    fun loadData() {
-        val users = usersRepo.getUsers()
-        usersListPresenter.users.addAll(users)
-        usersListPresenter.itemClickListener = { itemView ->
-            router.navigateTo(AndroidScreens().userInfo(users[itemView.pos].id))
-        }
-        viewState.updateList()
+                override fun onSuccess(t: List<GithubUser>?) {
+                    if (t != null) {
+                        viewState.hideProgressBar()
+                        usersListPresenter.users.addAll(t)
+                        usersListPresenter.itemClickListener = { itemView ->
+                            router.navigateTo(AndroidScreens().userInfo(t[itemView.pos].id))
+                        }
+                        viewState.updateList()
+                    }
+                }
+
+                override fun onError(e: Throwable?) {
+                    viewState.hideProgressBar()
+                }
+            })
     }
 
     fun backPressed(): Boolean {
         router.exit()
         return true
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
     }
 }

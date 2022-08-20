@@ -1,6 +1,44 @@
 package com.inflames1986.mvplesson.model
 
+import io.reactivex.rxjava3.core.Single
+import java.util.concurrent.TimeUnit
+
 class GithubUsersRepo {
+    private val userPlug = GithubUserAdvanced(
+        "Alex",
+        1,
+        "MDQ6VXNlcjE=",
+        "https://avatars.githubusercontent.com/u/1?v=4",
+        "",
+        "https://api.github.com/users/alex",
+        "https://github.com/alex",
+        "https://api.github.com/users/alexey/followers",
+        "https://api.github.com/users/alexey/following{/other_user}",
+        "https://api.github.com/users/alexey/gists{/gist_id}",
+        "https://api.github.com/users/alexey/starred{/owner}{/repo}",
+        "https://api.github.com/users/alexey/subscriptions",
+        "https://api.github.com/users/alexey/orgs",
+        "https://api.github.com/users/alexey/repos",
+        "https://api.github.com/users/alexey/events{/privacy}",
+        "https://api.github.com/users/alexey/received_events",
+        "User",
+        false,
+        "Alexus Maximus",
+        "freelancer",
+        "http://instagram.com",
+        "Sevastopol",
+        "alexey@google.com",
+        true,
+        "Eto Alexey",
+        "AlexH",
+        32,
+        2,
+        20,
+        5,
+        "2020-10-26T19:49:06Z",
+        "2021-08-11T20:44:38Z"
+    )
+
     private val repositories = listOf(
         GithubUser(
             "Alexey",
@@ -264,8 +302,18 @@ class GithubUsersRepo {
         ),
     )
 
-    fun getUsers(): List<GithubUser> {
-        return repositories
+    fun getUsers(): Single<List<GithubUser>> {
+        return Single.just(repositories).delay(5L, TimeUnit.SECONDS)
     }
 
+    fun getUserById(id: Int): Single<GithubUserAdvanced> {
+        // для тестирования выдаю конкретный результат без привязки id (пока)
+        val ss: Single<GithubUserAdvanced>
+        if (id == 3) {
+            ss = Single.error(Throwable("Запланированная ошибка"))
+        } else {
+            ss = Single.just(userPlug).delay(3L, TimeUnit.SECONDS)
+        }
+        return ss
+    }
 }

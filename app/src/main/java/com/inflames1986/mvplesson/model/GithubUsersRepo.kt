@@ -307,9 +307,9 @@ class GithubUsersRepo {
     }
 
     fun getUserById(id: Int): Single<GithubUserAdvanced> {
-        // для тестирования выдаю конкретный результат без привязки id (пока)
+        //здесь выдается конкретный результат для тестирования без привязки id (в дальнейшем будет переделано)
         val ss: Single<GithubUserAdvanced>
-        if (id == 3) {
+        if (id == 5) {
             ss = Single.error(Throwable("Запланированная ошибка"))
         } else {
             ss = Single.just(userPlug).delay(3L, TimeUnit.SECONDS)

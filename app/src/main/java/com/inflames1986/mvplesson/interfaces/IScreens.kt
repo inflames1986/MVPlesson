@@ -7,4 +7,6 @@ interface IScreens {
     fun users(): Screen
 
     fun userInfo(userId: Int): Screen
+
+    fun imageConverter(): Screen
 }

@@ -4,21 +4,18 @@ import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
-
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface UserInfoView : ProgressView, ErrorView, MvpView {
+interface RepoInfoView : ProgressView, ErrorView, MvpView {
 
     fun showLogin(text: String)
 
     fun setImageAvatar(url: String)
 
-    fun showTopString(text: String)
+    fun showNameRepository(text: String)
 
-    fun showCenterString(text: String)
+    fun showDescriptionRepository(text: String)
 
-    fun showBottomString(text: String)
+    fun showCountFork(count: String)
 
     fun init()
-
-    fun updateList()
 }

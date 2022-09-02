@@ -2,13 +2,17 @@ package com.inflames1986.mvplesson.users
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.inflames1986.mvplesson.databinding.ListItemBinding
+import com.inflames1986.mvplesson.interfaces.IImageLoader
 import com.inflames1986.mvplesson.interfaces.IUserListPresenter
 import com.inflames1986.mvplesson.interfaces.UserItemView
 
-class UsersRVAdapter(val presenter: IUserListPresenter) :
-    RecyclerView.Adapter<UsersRVAdapter.ViewHolder>() {
+class UsersRVAdapter(
+    val presenter: IUserListPresenter,
+    val imageLoader: IImageLoader<ImageView>
+) : RecyclerView.Adapter<UsersRVAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
         ListItemBinding.inflate(
@@ -32,6 +36,10 @@ class UsersRVAdapter(val presenter: IUserListPresenter) :
 
         override fun setLogin(text: String) = with(vb) {
             tvLogin.text = text
+        }
+
+        override fun setImageAvatar(url: String) = with(vb) {
+            imageLoader.loadInfo(url, imageViewUserAvatar)
         }
     }
 }

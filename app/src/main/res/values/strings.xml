@@ -12,4 +12,9 @@
     <string name="btn_start_converting_text">Конвертировать в PNG</string>
     <string name="btn_abort_converse_text">Отменить конвертацию</string>
     <string name="btn_go_to_image_converter_text">Конвертер изображений</string>
+    <string name="textView_default_name_repository_for_item_holder">Имя по умолчанию</string>
+    <string name="default_text_description_string_plug">Описание по умолчанию</string>
+    <string name="tv_count_of_forks_string_stub">число форков</string>
+    <string name="textView_default_name_repo_for_item_holder">Имя по умолчанию</string>
+    <string name="textView_default_description_repo_for_item_holder">Описание по умолчанию</string>
 </resources>

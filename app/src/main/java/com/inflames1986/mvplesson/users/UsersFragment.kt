@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.inflames1986.mvplesson.databinding.FragmentUsersBinding
-import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
 import com.inflames1986.mvplesson.App
+import com.inflames1986.mvplesson.databinding.FragmentUsersBinding
+import com.inflames1986.mvplesson.glide.GlideImageLoader
 import com.inflames1986.mvplesson.interfaces.BackButtonListener
 import com.inflames1986.mvplesson.interfaces.UsersView
-import com.inflames1986.mvplesson.model.GithubUsersRepo
-import ru.vdv.myapp.mygitapiapp.users.UsersPresenter
+import com.inflames1986.mvplesson.model.RetrofitGitHubUserRepo
+import com.inflames1986.mvplesson.myschedulers.MySchedulersFactory
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
+
 
 
 class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
@@ -21,7 +23,11 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
     }
 
     val presenter: UsersPresenter by moxyPresenter {
-        UsersPresenter(GithubUsersRepo(), App.instance.router)
+        UsersPresenter(
+            RetrofitGitHubUserRepo(com.inflames1986.mvplesson.retrofit.GitHubApiFactory.create()),
+            MySchedulersFactory.create(),
+            App.instance.router
+        )
     }
     var adapter: UsersRVAdapter? = null
     private var vb: FragmentUsersBinding? = null
@@ -38,10 +44,9 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
 
     override fun init() {
         vb?.rvUsers?.layoutManager = LinearLayoutManager(context)
-        adapter = UsersRVAdapter(presenter.usersListPresenter)
+        adapter = UsersRVAdapter(presenter.usersListPresenter, GlideImageLoader())
         vb?.rvUsers?.adapter = adapter
         vb?.btnGoToImgConverter?.setOnClickListener { presenter.goToImageConverter() }
-
     }
 
     override fun updateList() {
@@ -55,6 +60,7 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
     override fun hideProgressBar() {
         vb?.progressBar?.visibility = View.GONE
     }
+
 
     override fun backPressed(): Boolean = presenter.backPressed()
 

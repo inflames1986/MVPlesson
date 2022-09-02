@@ -6,7 +6,9 @@ interface IScreens {
 
     fun users(): Screen
 
-    fun userInfo(userId: Int): Screen
+    fun userInfo(userLogin: String): Screen
+
+    fun repoInfo(repositoryName: String): Screen
 
     fun imageConverter(): Screen
 }

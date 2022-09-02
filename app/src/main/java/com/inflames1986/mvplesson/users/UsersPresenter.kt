@@ -1,13 +1,9 @@
-package ru.vdv.myapp.mygitapiapp.users
+package com.inflames1986.mvplesson.users
 
 import com.github.terrakok.cicerone.Router
 import com.inflames1986.mvplesson.AndroidScreens
-import com.inflames1986.mvplesson.interfaces.IUserListPresenter
-import com.inflames1986.mvplesson.interfaces.UserItemView
-import com.inflames1986.mvplesson.interfaces.UsersView
+import com.inflames1986.mvplesson.interfaces.*
 import com.inflames1986.mvplesson.model.GithubUser
-import com.inflames1986.mvplesson.model.GithubUsersRepo
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -15,8 +11,9 @@ import moxy.MvpPresenter
 
 
 class UsersPresenter(
-    val usersRepo: GithubUsersRepo,
-    val router: Router
+    private val usersRepo: IGitHubUsersRepo,
+    private val schedulers: IMySchedulers,
+    private val router: Router
 ) : MvpPresenter<UsersView>() {
 
     class UsersListPresenter : IUserListPresenter {
@@ -27,7 +24,10 @@ class UsersPresenter(
 
         override fun bindView(view: UserItemView) {
             val user = users[view.pos]
-            view.setLogin(user.login)
+            user.login.let {
+                view.setLogin(user.login)
+                view.setImageAvatar(user.avatarUrl)
+            }
         }
     }
 
@@ -39,27 +39,34 @@ class UsersPresenter(
         viewState.init()
         viewState.showProgressBar()
         usersRepo.getUsers()
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(schedulers.main())
             .subscribe(object : SingleObserver<List<GithubUser>> {
                 override fun onSubscribe(d: Disposable?) {
                     disposables.add(d)
                 }
 
                 override fun onSuccess(t: List<GithubUser>?) {
-                    if (t != null) {
-                        viewState.hideProgressBar()
-                        usersListPresenter.users.addAll(t)
-                        usersListPresenter.itemClickListener = { itemView ->
-                            router.navigateTo(AndroidScreens().userInfo(t[itemView.pos].id))
-                        }
-                        viewState.updateList()
-                    }
+                    if (t == null) return
+                    onGetUsersSuccess(t)
                 }
 
                 override fun onError(e: Throwable?) {
-                    viewState.hideProgressBar()
+                    onGetUserError(e)
                 }
             })
+    }
+
+    private fun onGetUsersSuccess(listUsers: List<GithubUser>) {
+        viewState.hideProgressBar()
+        usersListPresenter.users.addAll(listUsers)
+        usersListPresenter.itemClickListener = { itemView ->
+            router.navigateTo(AndroidScreens().userInfo(listUsers[itemView.pos].login))
+        }
+        viewState.updateList()
+    }
+
+    private fun onGetUserError(e: Throwable?) {
+        viewState.hideProgressBar()
     }
 
     fun goToImageConverter() {

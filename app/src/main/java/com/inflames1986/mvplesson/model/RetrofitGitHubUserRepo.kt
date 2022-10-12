@@ -1,12 +1,19 @@
 package com.inflames1986.mvplesson.model
 
+import com.inflames1986.mvplesson.core.database.UserDAO
+import com.inflames1986.mvplesson.core.network.UsersApi
 import com.inflames1986.mvplesson.interfaces.IDataGitHubAPI
 import com.inflames1986.mvplesson.interfaces.IGitHubUsersRepo
 import com.inflames1986.mvplesson.myschedulers.MySchedulersFactory
 import io.reactivex.rxjava3.core.Single
 
 
-class RetrofitGitHubUserRepo(val api: IDataGitHubAPI) : IGitHubUsersRepo {
+class RetrofitGitHubUserRepo(
+    private val api: IDataGitHubAPI,
+    private val userDao: UserDAO,
+    private val networkStatus: Single<Boolean>
+) : IGitHubUsersRepo {
+
     override fun getUsers(): Single<List<GithubUser>> {
         return api.getUsers().subscribeOn(MySchedulersFactory.create().io())
     }
